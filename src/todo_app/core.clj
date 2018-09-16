@@ -2,14 +2,17 @@
   (:require [compojure.core :refer [routes]]
             [ring.adapter.jetty :as server]
             [todo-app.handler.main :refer [main-routes]]
-            [todo-app.handler.todo :refer [todo-routes]]))
+            [todo-app.handler.todo :refer [todo-routes]]
+            [todo-app.middleware :refer [wrap-dev]]))
 
 (defonce server (atom nil))
 
 (def app
-  (routes
-   todo-routes
-   main-routes))
+  (->
+    (routes
+      todo-routes
+      main-routes)
+    wrap-dev))
 
 (defn start-server []
   (when-not @server
