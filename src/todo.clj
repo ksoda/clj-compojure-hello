@@ -1,5 +1,8 @@
 (ns todo-clj.core
-  (:require [ring.adapter.jetty :as server]))
+  (:require [compojure.core :refer [defroutes context GET]]
+            [compojure.route :as route]
+            [ring.adapter.jetty :as server]
+            [ring.util.response :as res]))
 
 (defonce server (atom nil))
 
@@ -60,22 +63,9 @@
       ok
       html))
 
-(def routes
-  {"/" home
-   "/todo" todo-index})
-
-(defn match-route [uri]
-  (get routes uri))
-
-(defn not-found []
-  {:status 404
-   :body "<h1>404 page not found</1>"})
-
-(defn handler [req]
-  (let [uri (:uri req)
-        maybe-fn (match-route uri)]
-    (if maybe-fn
-      (maybe-fn req)
-      (not-found))))
+(defroutes handler
+           (GET "/" req home)
+           (GET "/todo" req todo-index)
+           (route/not-found "<h1>404 page not found</h1>"))
 
 (comment)
