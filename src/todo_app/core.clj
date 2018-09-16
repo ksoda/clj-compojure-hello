@@ -7,12 +7,19 @@
 
 (defonce server (atom nil))
 
+(defn- wrap [handler middleware opt]
+  (if (true? opt)
+    (middleware handler)
+    (if opt
+      (middleware handler opt)
+      handler)))
+
 (def app
   (->
     (routes
       todo-routes
       main-routes)
-    wrap-dev))
+    (wrap wrap-dev (:dev env))))
 
 (defn start-server []
   (when-not @server
