@@ -30,11 +30,7 @@
 
 
 (defn html [res]
-  (assoc res :headers {"Content-Type" "text/html; charset=utf-8"}))
-
-(defn ok [body]
-  {:status 200
-   :body body})
+  (res/content-type res "text/html; charset=utf-8"))
 
 (defn home-view [req]
   "<h1>ホーム画面</h1>
@@ -42,7 +38,7 @@
 
 (defn home [req]
   (-> (home-view req)
-      ok
+      res/response
       html))
 
 (def todo-list
@@ -60,7 +56,7 @@
 
 (defn todo-index [req]
   (-> (todo-index-view req)
-      ok
+      res/response
       html))
 
 (defroutes handler
